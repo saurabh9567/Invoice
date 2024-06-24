@@ -1,17 +1,19 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const categoryField = document.querySelector('[name$="-category"]');
-    const productField = document.querySelector('[name$="-product"]');
-
+document.addEventListener('change', function (event) {
+    const qs = event.target.name;
+    console.log("qs", qs);
+    if (!qs.includes("category")) {
+        console.log("qs.includes('category')", qs.includes("category"));
+        return true;
+    }
+    const categoryField = document.querySelector(`[name$="${qs}"]`);
+    const productField = document.querySelector(`[name$=${qs.replace("category", "product")}]`);
     if (categoryField) {
-        categoryField.addEventListener('change', function () {
-            const categoryId = this.value;
-
-            if (categoryId) {
-                fetchProducts(categoryId, productField);
-            } else {
-                productField.innerHTML = '';
-            }
-        });
+        const categoryId = event.target.value;
+        if (categoryId) {
+            fetchProducts(categoryId, productField);
+        } else {
+            productField.innerHTML = '';
+        }
     }
 
     function fetchProducts(categoryId, productField) {

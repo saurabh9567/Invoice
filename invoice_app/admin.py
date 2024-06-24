@@ -4,6 +4,9 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from .models import Customer, Category, Product, Invoice, InvoiceItem
 from .forms import InvoiceItemForm
+from django.contrib.admin.models import LogEntry
+
+LogEntry.objects.all().delete()
 
 class InvoiceItemInline(admin.TabularInline):
     model = InvoiceItem

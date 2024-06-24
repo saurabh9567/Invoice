@@ -21,3 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('invoice/', include('invoice_app.urls')),
 ]
+
+admin.site.site_header = "SS VERMA"
+admin.site.site_title = "SS VERMA"
+admin.site.index_title = "Welcome to SS VERMA Invoice App"
