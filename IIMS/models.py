@@ -46,6 +46,10 @@ class InvoiceItem(models.Model):
         return self.product.price * self.quantity
 
     def clean(self):
+        if self.quantity is None:
+            raise ValidationError("Quantity cannot be null.")
+        if self.product is None or self.product.quantity is None:
+            raise ValidationError("Product quantity cannot be null.")
         if self.quantity > self.product.quantity:
             raise ValidationError(f"Insufficient stock for {self.product.name}")
 
