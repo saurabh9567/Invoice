@@ -17,8 +17,12 @@ def get_products_by_category(request, category_id):
 
 def generate_invoice_pdf(request, invoice_id):
     invoice = Invoice.objects.get(id=invoice_id)
+    # Customer details
+    customer_name = invoice.customer.name
+    mobile_num = invoice.customer.mobile_no
+    invoice_date = invoice.date.strftime('%Y-%m-%d')
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="invoice_{invoice_id}.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="invoice_{invoice_id}_{invoice_date}.pdf"'
 
     border_padding = 20  # Padding for the border
     content_width = letter[0] - 2 * border_padding  # Calculate the content width
@@ -29,10 +33,6 @@ def generate_invoice_pdf(request, invoice_id):
     styles = getSampleStyleSheet()
     elements = []
 
-    # Customer details
-    customer_name = invoice.customer.name
-    mobile_num = invoice.customer.mobile_no
-    invoice_date = invoice.date.strftime('%Y-%m-%d')
 
     # Header, footer, and border function
     def header_footer(canvas, doc):
@@ -48,11 +48,11 @@ def generate_invoice_pdf(request, invoice_id):
         
         # Title in the center
         canvas.setFont('Helvetica-Bold', 16)
-        canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 30, "Swaraj Singh Verma")
+        canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 30, "Swarajya Singh Verma")
         
         # Address in the center
         canvas.setFont('Helvetica', 12)
-        canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 50, "Seller of acid and goldsmith's tools, jewelery boxes. 96 Homganj Etawah (U.P.) 206001")
+        canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 50, "Thank you for purchasing from us! We offer a range of jewelry boxes, jewelry making tools, and acid. 96 Homeganj Etawah (U.P.) 206001")
 
         canvas.restoreState()
 

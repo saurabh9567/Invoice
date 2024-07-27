@@ -87,10 +87,10 @@ class InvoiceAdmin(admin.ModelAdmin):
 
     def download_invoice(self, obj):
         return format_html(
-            '<a class="button" href="{}">Download Invoice</a>',
+            '<a class="button" href="{}">Save</a>',
             reverse('admin:generate_invoice_pdf', args=[obj.pk]),
         )
-    download_invoice.short_description = 'Download Invoice'
+    download_invoice.short_description = 'Save'
     download_invoice.allow_tags = True
 
 class ProductAdmin(admin.ModelAdmin):

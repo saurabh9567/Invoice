@@ -46,11 +46,11 @@ def download_invoice(request, invoice_id):
         
         # Title in the center
         canvas.setFont('Helvetica-Bold', 16)
-        canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 30, "Swaraj Singh Verma")
+        canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 30, "Swarajya Singh Verma")
         
         # Address in the center
         canvas.setFont('Helvetica', 12)
-        canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 50, "Seller of acid and goldsmith's tools, jewelery boxes. 96 Homganj Etawah (U.P.) 206001")
+        canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 50, "We offer a range of jewelry boxes, jewelry making tools, and acid. 96 Homganj Etawah (U.P.) 206001")
 
         canvas.restoreState()
 
@@ -88,7 +88,7 @@ def download_invoice(request, invoice_id):
 
     # Customer details as table rows
     customer_data = [
-        ['Customer Name:', customer_name],
+        ['Customer Name:', customer_name.title()],
         ['Mobile number:', mobile_num],
         ['Date:', invoice_date],
     ]
@@ -107,7 +107,7 @@ def download_invoice(request, invoice_id):
     elements.append(Spacer(1, 12))
 
     # Table Data with SNo column
-    data = [['SNo', 'Product', 'Quantity', 'Unit Price', 'Total Price']]
+    data = [['S.No', 'Product', 'Quantity', 'Unit Price', 'Total Price']]
     for idx, item in enumerate(invoice.items.all(), start=1):
         data.append([idx, item.product.name, item.quantity, f"{item.product.price:.2f}", f"{item.total_price():.2f}"])
 

@@ -24,6 +24,6 @@ urlpatterns = [
     
 ]
 
-admin.site.site_header = "SS VERMA"
-admin.site.site_title = "SS VERMA"
-admin.site.index_title = "Welcome to SS VERMA Invoice App"
+admin.site.site_header = "Gaurav Jewellers"
+admin.site.site_title = "Gaurav Jewellers"
+admin.site.index_title = "Welcome to Gaurav Jewellers Invoice App"
