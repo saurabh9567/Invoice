@@ -1,5 +1,5 @@
 from django.http import HttpResponse, JsonResponse
-from invoice_app.models import Invoice, Product
+from IIMS.models import Invoice, Product
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.units import inch
@@ -13,9 +13,7 @@ def get_products_by_category(request, category_id):
     return JsonResponse({'products': products_data})
 
 
-
-
-def generate_invoice_pdf(request, invoice_id):
+def download_invoice(request, invoice_id):
     invoice = Invoice.objects.get(id=invoice_id)
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="invoice_{invoice_id}.pdf"'
@@ -68,9 +66,9 @@ def generate_invoice_pdf(request, invoice_id):
         # Draw footer text
         canvas.setFillColor(colors.white)  # Set text color to white
         canvas.setFont('Helvetica-Bold', 10)
-        canvas.drawString(border_padding + 10, footer_y + 5, "Account Name: Swarajya Singh Verma")
-        canvas.drawString(border_padding + 10, footer_y + 20, "Account Number: 36542591986")
-        canvas.drawString(border_padding + 10, footer_y + 35, "IFSC Code: SBIN0002542")  # Adjusted position for more space
+        canvas.drawString(border_padding + 10, footer_y + 5, "")
+        canvas.drawString(border_padding + 10, footer_y + 20, "")
+        canvas.drawString(border_padding + 10, footer_y + 35, "")  # Adjusted position for more space
         canvas.drawRightString(letter[0] - border_padding - 10, footer_y + 35, "Name: Mr. Gaurav Verma")
         canvas.restoreState()
 
