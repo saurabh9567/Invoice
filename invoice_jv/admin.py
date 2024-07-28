@@ -5,9 +5,9 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from .models import Customer, Category, Product, Invoice, InvoiceItem
-from IIMS.forms import IIMSInvoiceItemForm
+from invoice_jv.forms import IIMSInvoiceItemForm
 from django.contrib.admin.models import LogEntry
-from IIMS.views import download_invoice
+from invoice_jv.views import download_invoice
 from django.urls import path
 from django.shortcuts import get_object_or_404
 

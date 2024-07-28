@@ -1,5 +1,5 @@
 from django.http import HttpResponse, JsonResponse
-from IIMS.models import Invoice, Product
+from invoice_jv.models import Invoice, Product
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.units import inch
@@ -48,9 +48,16 @@ def download_invoice(request, invoice_id):
         canvas.setFont('Helvetica-Bold', 16)
         canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 30, "Swarajya Singh Verma")
         
-        # Address in the center
+        # Address in the center, split into two lines
+        address_line1 = "We offer a range of jewelry boxes, jewelry making tools, and acid."
+        address_line2 = "96 Homganj Etawah (U.P.) 206001"
+        
         canvas.setFont('Helvetica', 12)
-        canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 50, "We offer a range of jewelry boxes, jewelry making tools, and acid. 96 Homganj Etawah (U.P.) 206001")
+        canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 50, address_line1)
+        canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 65, address_line2)
+
+
+        
 
         canvas.restoreState()
 
