@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'invoice_app',
-    'IIMS',
+    'invoice_jv',
 ]
 
 MIDDLEWARE = [
@@ -82,25 +82,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-# DATABASES = {
-#     # "default": {
-#     #     "ENGINE": "django.db.backends.mysql",
-#     #     "NAME": "invoice",
-#     #     "USER": "root",
-#     #     "PASSWORD": "root",
-#     #     "HOST": "127.0.0.1",
-#     #     "PORT": "3306",
-#     # }
-#     # "default": {
-#     #     "ENGINE": "django.db.backends.mysql",
-#     #     "NAME": "invoice",
-#     #     "USER": "root",
-#     #     "PASSWORD": "root@12345678",
-#     #     "HOST": "127.0.0.1",
-#     #     "PORT": "3306",
-#     # }
-# }
 
 
 # Password validation

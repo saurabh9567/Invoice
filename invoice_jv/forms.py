@@ -1,5 +1,5 @@
 from django import forms
-from IIMS.models import InvoiceItem, Category, Product
+from invoice_jv.models import InvoiceItem, Category, Product
 
 class IIMSInvoiceItemForm(forms.ModelForm):
     class Meta:

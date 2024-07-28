@@ -50,9 +50,13 @@ def generate_invoice_pdf(request, invoice_id):
         canvas.setFont('Helvetica-Bold', 16)
         canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 30, "Swarajya Singh Verma")
         
-        # Address in the center
+        # Address in the center, split into two lines
+        address_line1 = "We offer a range of jewelry boxes, jewelry making tools, and acid."
+        address_line2 = "96 Homganj Etawah (U.P.) 206001"
+        
         canvas.setFont('Helvetica', 12)
-        canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 50, "Thank you for purchasing from us! We offer a range of jewelry boxes, jewelry making tools, and acid. 96 Homeganj Etawah (U.P.) 206001")
+        canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 50, address_line1)
+        canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 65, address_line2)
 
         canvas.restoreState()
 
