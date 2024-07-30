@@ -17,7 +17,7 @@ document.addEventListener('change', function (event) {
     }
 
     function fetchProducts(categoryId, productField) {
-        const url = `/iims/get_products_by_category/${categoryId}/`;
+        const url = `/invoice_jv/get_products_by_category/${categoryId}/`;
 
         fetch(url)
             .then(response => response.json())
