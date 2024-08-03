@@ -33,7 +33,7 @@ class InvoiceItemInline(admin.TabularInline):
     class Media:
         js = (
             'admin/js/jquery.init.js',
-            'admin/js/iims_invoice_item.js',
+            'admin/js/invoice_jv_item.js',
         )
 
 class InvoiceAdmin(admin.ModelAdmin):

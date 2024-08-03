@@ -15,8 +15,12 @@ def get_products_by_category(request, category_id):
 
 def download_invoice(request, invoice_id):
     invoice = Invoice.objects.get(id=invoice_id)
+    # Customer details
+    customer_name = invoice.customer.name
+    mobile_num = invoice.customer.mobile_no
+    invoice_date = invoice.date.strftime('%Y-%m-%d')
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="invoice_{invoice_id}.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="invoice_{invoice_id}_{invoice_date}.pdf"'
 
     border_padding = 20  # Padding for the border
     content_width = letter[0] - 2 * border_padding  # Calculate the content width
@@ -26,11 +30,6 @@ def download_invoice(request, invoice_id):
                             leftMargin=border_padding, rightMargin=border_padding, topMargin=80, bottomMargin=80)
     styles = getSampleStyleSheet()
     elements = []
-
-    # Customer details
-    customer_name = invoice.customer.name
-    mobile_num = invoice.customer.mobile_no
-    invoice_date = invoice.date.strftime('%Y-%m-%d')
 
     # Header, footer, and border function
     def header_footer(canvas, doc):
