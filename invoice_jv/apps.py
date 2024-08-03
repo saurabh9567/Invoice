@@ -4,4 +4,4 @@ from django.apps import AppConfig
 class InvoiceJvConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'invoice_jv'
-    verbose_name = 'Invoice App'
+    verbose_name = 'GV Invoice App'
