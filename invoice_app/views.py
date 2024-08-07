@@ -12,9 +12,6 @@ def get_products_by_category(request, category_id):
     products_data = [{'id': product.id, 'name': product.name} for product in products]
     return JsonResponse({'products': products_data})
 
-
-
-
 def generate_invoice_pdf(request, invoice_id):
     invoice = Invoice.objects.get(id=invoice_id)
     # Customer details
@@ -115,7 +112,7 @@ def generate_invoice_pdf(request, invoice_id):
     # Table Data with SNo column
     data = [['SNo', 'Product', 'Quantity', 'Unit Price', 'Total Price']]
     for idx, item in enumerate(invoice.items.all(), start=1):
-        data.append([idx, item.product.name, item.quantity, f"{item.product.price:.2f}", f"{item.total_price():.2f}"])
+        data.append([idx, item.product.name, item.quantity, f"{item.product.selling_price:.2f}", f"{item.total_price():.2f}"])
 
     # Add total amount row
     data.append(['', '', '', 'Total Amount', f"{invoice.total_amount():.2f}"])

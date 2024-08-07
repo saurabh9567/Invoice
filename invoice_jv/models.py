@@ -21,7 +21,8 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=200, blank=False)
-    price = models.DecimalField(max_digits=10, decimal_places=2, blank=False)
+    purchase_price = models.DecimalField(max_digits=10, decimal_places=2, blank=False)
+    selling_price = models.DecimalField(max_digits=10, decimal_places=2, blank=False)
     quantity = models.PositiveIntegerField(blank=False)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products', blank=False)
 
@@ -47,7 +48,7 @@ class InvoiceItem(models.Model):
         return f"{self.quantity} x {self.product.name}"
 
     def total_price(self):
-        return self.product.price * self.quantity
+        return self.product.selling_price * self.quantity
 
     def clean(self):
         if self.quantity is None:

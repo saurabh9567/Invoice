@@ -10,10 +10,6 @@ from invoice_app.forms import InvoiceItemForm
 from invoice_app.views import generate_invoice_pdf
 from django.contrib.admin.models import LogEntry
 
-LogEntry.objects.all().delete()
-
-
-required_item = "Invoice cannot be saved without any items."
 class InvoiceItemInlineFormset(forms.BaseInlineFormSet):
     def clean(self):
         super().clean()
@@ -54,13 +50,13 @@ class InvoiceAdmin(admin.ModelAdmin):
             formset.save_m2m()
         except ValidationError as e:
             formset._non_form_errors = formset.error_class([str(e)])
-            messages.error(request, required_item)
+            messages.error(request, "Please fill all the required fields.")
             return
 
     def response_add(self, request, obj, post_url_continue=None):
         if not obj.items.exists():
             obj.delete()
-            messages.error(request, required_item)
+            messages.error(request, "Please fill all the required fields.")
             return super().response_add(request, obj, post_url_continue)
         messages.success(request, "Invoice added successfully.")
         return super().response_add(request, obj, post_url_continue)
@@ -68,7 +64,7 @@ class InvoiceAdmin(admin.ModelAdmin):
     def response_change(self, request, obj):
         if not obj.items.exists():
             obj.delete()
-            messages.error(request, required_item)
+            messages.error(request, "Please fill all the required fields.")
             return super().response_change(request, obj)
         messages.success(request, "Invoice updated successfully.")
         return super().response_change(request, obj)
@@ -94,7 +90,7 @@ class InvoiceAdmin(admin.ModelAdmin):
     download_invoice.allow_tags = True
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'quantity', 'category')
+    list_display = ('name', 'purchase_price', 'selling_price', 'quantity', 'category')
     list_filter = ('category',)
 
 admin.site.register(Customer)

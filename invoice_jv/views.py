@@ -115,7 +115,7 @@ def download_invoice(request, invoice_id):
     # Table Data with SNo column
     data = [['S.No', 'Product', 'Quantity', 'Unit Price', 'Total Price']]
     for idx, item in enumerate(invoice.items.all(), start=1):
-        data.append([idx, item.product.name, item.quantity, f"{item.product.price:.2f}", f"{item.total_price():.2f}"])
+        data.append([idx, item.product.name, item.quantity, f"{item.product.selling_price:.2f}", f"{item.total_price():.2f}"])
 
     # Add total amount row
     data.append(['', '', '', 'Total Amount', f"{invoice.total_amount():.2f}"])
