@@ -119,7 +119,7 @@ def generate_invoice_pdf(request, invoice_id):
     # Add total amount in words row
     total_amount_words = num2words(invoice.total_amount(), lang='en_IN')
     # Add total amount row
-    data.append([f'Rupees {total_amount_words.title()} Only.', '', '', 'Total', f"{invoice.total_amount():.2f}"])
+    data.append([f'{total_amount_words.title()} Rupees Only.', '', '', 'Total', f"{invoice.total_amount():.2f}"])
 
     # Create the table
     table = Table(data, colWidths=[0.5 * inch, content_width - 0.5 * inch - 1.5 * inch - 1.5 * inch - 2 * inch, 1.5 * inch, 1.5 * inch, 2 * inch])
