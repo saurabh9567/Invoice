@@ -5,6 +5,7 @@ from reportlab.lib import colors
 from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
+from num2words import num2words
 
 
 def get_products_by_category(request, category_id):
@@ -30,31 +31,31 @@ def generate_invoice_pdf(request, invoice_id):
     styles = getSampleStyleSheet()
     elements = []
 
-
     # Header, footer, and border function
     def header_footer(canvas, doc):
         # Header
         canvas.saveState()
         
         # GST No. at top left corner
-        canvas.setFont('Helvetica-Bold', 12)
+        canvas.setFont('Helvetica', 12)
         canvas.drawString(border_padding + 10, letter[1] - border_padding - 20, "GST No.: 09AFEPV3321C1Z0")
+        canvas.drawRightString(letter[0] - border_padding - 10, letter[1] - border_padding - 20, "Mobile No.: 9897094388")
+        canvas.drawRightString(letter[0] - border_padding - 10, letter[1] - border_padding - 35, f"Invoice No. {invoice_id}")
         
-        # Mobile number at top right corner
-        canvas.drawRightString(letter[0] - border_padding - 10, letter[1] - border_padding - 20, "Mobile Number: 9897094388")
-        
-        # Title in the center
         canvas.setFont('Helvetica-Bold', 16)
+        # Title in the center
         canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 30, "Swarajya Singh Verma")
         
         # Address in the center, split into two lines
-        address_line1 = "We offer a range of jewelry boxes, jewelry making tools, and acid."
+        address_line1 = "We offer a range of jewellery boxes, jewellery making tools, and acid."
         address_line2 = "96 Homganj Etawah (U.P.) 206001"
+        bill_type = "BILL OF SUPPLY"
         
         canvas.setFont('Helvetica', 12)
         canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 50, address_line1)
         canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 65, address_line2)
-
+        canvas.setFont('Helvetica-Bold', 12)
+        canvas.drawCentredString(letter[0] / 2, letter[1] - border_padding - 90, bill_type)
         canvas.restoreState()
 
         # Footer
@@ -84,15 +85,15 @@ def generate_invoice_pdf(request, invoice_id):
         canvas.rect(border_padding, border_padding, width - 2 * border_padding, height - 2 * border_padding)
         canvas.restoreState()
 
-    # Invoice number above customer details
-    invoice_number_paragraph = Paragraph(f"Invoice Number: {invoice.id}", styles['Normal'])
-    elements.append(invoice_number_paragraph)
-    elements.append(Spacer(1, 12))
+    # # Invoice number above customer details
+    # invoice_number_paragraph = Paragraph(f"Invoice Number: {invoice.id}", styles['Normal'])
+    # elements.append(invoice_number_paragraph)
+    # elements.append(Spacer(1, 12))
 
     # Customer details as table rows
     customer_data = [
-        ['Customer Name:', customer_name],
-        ['Mobile number:', mobile_num],
+        ['Customer Name:', customer_name.title()],
+        ['Mobile No.:', mobile_num],
         ['Date:', invoice_date],
     ]
 
@@ -106,16 +107,19 @@ def generate_invoice_pdf(request, invoice_id):
         ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
     ]))
 
+    elements.append(Spacer(1, 30))
     elements.append(customer_table)
     elements.append(Spacer(1, 12))
 
     # Table Data with SNo column
-    data = [['SNo', 'Product', 'Quantity', 'Unit Price', 'Total Price']]
+    data = [['S.No', 'Product', 'Quantity', 'Unit Price', 'Total Price']]
     for idx, item in enumerate(invoice.items.all(), start=1):
         data.append([idx, item.product.name, item.quantity, f"{item.product.selling_price:.2f}", f"{item.total_price():.2f}"])
 
+    # Add total amount in words row
+    total_amount_words = num2words(invoice.total_amount(), lang='en_IN')
     # Add total amount row
-    data.append(['', '', '', 'Total Amount', f"{invoice.total_amount():.2f}"])
+    data.append([f'Rupees {total_amount_words.title()} Only.', '', '', 'Total', f"{invoice.total_amount():.2f}"])
 
     # Create the table
     table = Table(data, colWidths=[0.5 * inch, content_width - 0.5 * inch - 1.5 * inch - 1.5 * inch - 2 * inch, 1.5 * inch, 1.5 * inch, 2 * inch])
@@ -124,9 +128,16 @@ def generate_invoice_pdf(request, invoice_id):
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('TOPPADDING', (0, 1), (-1, -1), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 13),
+        ('TOPPADDING', (0, 0), (-1, -1), 13),
         ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('BACKGROUND', (0, -1), (-1, -1), colors.grey),  # Total Amount row background
+        ('TEXTCOLOR', (0, -1), (-1, -1), colors.whitesmoke),  # Total Amount row text color
+        ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),  # Total Amount row font
+        ('SPAN', (0, -1), (2, -1)),  # Merge cells for total_amount_in_words
+        ('ALIGN', (0, -1), (2, -1), 'LEFT'),  # Left align total_amount_in_words
+        ('ALIGN', (3, -1), (3, -1), 'CENTER'),  # Right align "Total" text
+        ('ALIGN', (4, -1), (4, -1), 'CENTER'),  # Right align the actual amount
         ('GRID', (0, 0), (-1, -1), 1, colors.black),  # Border for the whole table
     ]))
 
