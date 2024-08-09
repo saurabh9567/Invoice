@@ -1,11 +1,18 @@
+import os
 from django.http import HttpResponse, JsonResponse
 from invoice_app.models import Invoice, Product
+from invoice.settings import STATIC_ROOT
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from num2words import num2words
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase import pdfmetrics
+
+pdfmetrics.registerFont(TTFont('DejaVuSans', os.path.join(STATIC_ROOT, 'admin', 'font', 'dejavu-sans', 'DejaVuSans.ttf')))
+pdfmetrics.registerFont(TTFont('DejaVuSans-Bold', os.path.join(STATIC_ROOT, 'admin', 'font', 'dejavu-sans', 'DejaVuSans-Bold.ttf')))
 
 
 def get_products_by_category(request, category_id):
@@ -85,10 +92,6 @@ def generate_invoice_pdf(request, invoice_id):
         canvas.rect(border_padding, border_padding, width - 2 * border_padding, height - 2 * border_padding)
         canvas.restoreState()
 
-    # # Invoice number above customer details
-    # invoice_number_paragraph = Paragraph(f"Invoice Number: {invoice.id}", styles['Normal'])
-    # elements.append(invoice_number_paragraph)
-    # elements.append(Spacer(1, 12))
 
     # Customer details as table rows
     customer_data = [
@@ -114,26 +117,28 @@ def generate_invoice_pdf(request, invoice_id):
     # Table Data with SNo column
     data = [['S.No', 'Product', 'Quantity', 'Unit Price', 'Total Price']]
     for idx, item in enumerate(invoice.items.all(), start=1):
-        data.append([idx, item.product.name, item.quantity, f"{item.product.selling_price:.2f}", f"{item.total_price():.2f}"])
+        data.append([idx, item.product.name, item.quantity, f"₹{item.product.selling_price:.2f}", f"₹{item.total_price():.2f}"])
 
     # Add total amount in words row
     total_amount_words = num2words(invoice.total_amount(), lang='en_IN')
+
     # Add total amount row
-    data.append([f'{total_amount_words.title()} Rupees Only.', '', '', 'Total', f"{invoice.total_amount():.2f}"])
+    data.append([f'{total_amount_words.title()} Rupees Only.', '', '', 'Total', f"₹{invoice.total_amount():.2f}"])
 
     # Create the table
     table = Table(data, colWidths=[0.5 * inch, content_width - 0.5 * inch - 1.5 * inch - 1.5 * inch - 2 * inch, 1.5 * inch, 1.5 * inch, 2 * inch])
     table.setStyle(TableStyle([
+        ('FONTNAME', (0, 0), (-1, -1), 'DejaVuSans'),
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTNAME', (0, 0), (-1, 0), 'DejaVuSans-Bold'),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 13),
         ('TOPPADDING', (0, 0), (-1, -1), 13),
         ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
         ('BACKGROUND', (0, -1), (-1, -1), colors.grey),  # Total Amount row background
         ('TEXTCOLOR', (0, -1), (-1, -1), colors.whitesmoke),  # Total Amount row text color
-        ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),  # Total Amount row font
+        ('FONTNAME', (0, -1), (-1, -1), 'DejaVuSans-Bold'),  # Total Amount row font
         ('SPAN', (0, -1), (2, -1)),  # Merge cells for total_amount_in_words
         ('ALIGN', (0, -1), (2, -1), 'LEFT'),  # Left align total_amount_in_words
         ('ALIGN', (3, -1), (3, -1), 'CENTER'),  # Right align "Total" text
